@@ -1,0 +1,3 @@
+DriveClub Recomp source patch: host exit modal disabled. Original source archive: driveclub-recomp-main.zip.
+Menu A/B swap NOT included. Runtime test NOT performed.
+Use GitHub Actions -> Build Linux AppImage (exit modal disabled) -> Run workflow.
