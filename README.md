@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # DriveClub Recomp
 
 **DriveClub for PS4 (version 1.28), running natively on Windows and Linux.**
@@ -209,3 +210,6 @@ Also used: [SDL3](https://github.com/libsdl-org/SDL) and [FFmpeg](https://ffmpeg
 GNU General Public License version 2 or later ([LICENSE](LICENSE)). Parts of the code derive from other GPL projects and keep their original notices in the source files. Third-party components keep their own licenses ([THIRD_PARTY_NOTICES.txt](packaging/release/THIRD_PARTY_NOTICES.txt)).
 
 DriveClub is a trademark and copyright of its respective owners; this project is not affiliated with or endorsed by them.
+=======
+# DriveClub-Fixed
+>>>>>>> origin/main
