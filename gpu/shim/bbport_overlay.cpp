@@ -1143,7 +1143,7 @@ void Render(vk::CommandBuffer cmdbuf, vk::ImageView view, vk::Extent2D extent) {
             trophy_active = !trophy_queue.empty();
         }
     }
-    ExitConfirmation(scale);
+    /* ExitConfirmation disabled */
     ImGui::Render();
 
     const vk::RenderingAttachmentInfo attachment{
