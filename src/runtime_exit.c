@@ -228,6 +228,37 @@ void runtime_exit_initialize(void) {
         puts("Exit dialog: unsupported regional input code; dialog disabled"); return;
     }
     regional_input_ready=true;
+    /* Force Cross (Xbox A) confirmation regardless of PS4 title region.
+     * The verified native predicate returns true for Circle-confirm regions.
+     * Replace its entry with xor eax,eax; ret, preserving physical pad mapping. */
+    {
+        unsigned char *region_site=(unsigned char *)(runtime_image_base+0x5008f0);
+        const unsigned char force_cross[]={0x31,0xc0,0xc3};
+#ifdef _WIN32
+        DWORD region_old,region_ignored;
+        if (!VirtualProtect(region_site,sizeof(force_cross),PAGE_EXECUTE_READWRITE,&region_old)) {
+            puts("Input: unable to force Cross confirm (VirtualProtect)");
+        } else {
+            memcpy(region_site,force_cross,sizeof(force_cross));
+            VirtualProtect(region_site,sizeof(force_cross),region_old,&region_ignored);
+            FlushInstructionCache(GetCurrentProcess(),region_site,sizeof(force_cross));
+            guest_cpu_code_changed((uintptr_t)region_site,sizeof(force_cross));
+            puts("Input: forced Cross (Xbox A) confirm; Circle (Xbox B) back");
+        }
+#else
+        const size_t region_page=(size_t)sysconf(_SC_PAGESIZE);
+        void *region_start=(void *)((uintptr_t)region_site&~(uintptr_t)(region_page-1));
+        if (mprotect(region_start,region_page,PROT_READ|PROT_WRITE|PROT_EXEC)) {
+            puts("Input: unable to force Cross confirm (mprotect)");
+        } else {
+            memcpy(region_site,force_cross,sizeof(force_cross));
+            mprotect(region_start,region_page,PROT_READ|PROT_EXEC);
+            __builtin___clear_cache((char *)region_site,(char *)region_site+sizeof(force_cross));
+            guest_cpu_code_changed((uintptr_t)region_site,sizeof(force_cross));
+            puts("Input: forced Cross (Xbox A) confirm; Circle (Xbox B) back");
+        }
+#endif
+    }
     unsigned char *site=(unsigned char *)(runtime_image_base+0x7d6e70);
     static const unsigned char expected[]={0x4c,0x89,0xff,0xe8,0xa8,0x05,0,0,
         0x4c,0x89,0xff,0xe8,0x90,0xf9,0xff,0xff};
